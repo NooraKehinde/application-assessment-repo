@@ -1,7 +1,7 @@
 common: &default_settings
   # ============================== LICENSE KEY ===============================
   # You must specify the license key associated with your New Relic account.
-  license_key: 'eu01xx9693241df8aa83707c54322862FFFFNRAL'
+  license_key: 'eu01xx34cc8450f7f10130a18383c19cFFFFNRAL'
   agent_enabled: true
   # Set the name of your application as you'd like it show up in New Relic.
   app_name: 'myapp'
