@@ -1,4 +1,4 @@
-pipeline{
+pipeline {
     agent any
     environment {
         NEXUS_USER = credentials('nexus-username')
@@ -28,11 +28,6 @@ pipeline{
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-        // stage('Test Code') {
-        //     steps {
-        //         sh 'mvn test -Dcheckstyle.skip'
-        //     }
-        // }
         stage('Build Artifact') {
             steps {
                 sh 'mvn clean package -DskipTests -Dcheckstyle.skip'
@@ -58,11 +53,6 @@ pipeline{
                 version: '1.0'
             }
         }
-        // stage('Trivy fs Scan') {
-        //     steps {
-        //         sh "trivy fs . > trivyfs.txt"
-        //     }
-        // }
         stage('Log Into Nexus Docker Repo') {
             steps {
                 sh 'docker login --username $NEXUS_USER --password $NEXUS_PASSWORD $NEXUS_REPO'
@@ -87,10 +77,8 @@ pipeline{
             steps {
                 sshagent(['ansible-key']) {
                     sh '''
-                      ssh -t -t -o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" ec2-user@$ANSIBLE_HOST "ansible-playbook -i /etc/ansible/stage_hosts /etc/ansible/deployment.yml"
+                      ssh -t -t -o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" ec2-user@$ANSIBLE_HOST "ansible-playbook -i /etc/ansible/stage_hosts /etc/ansible/stage-playbook.yml"
                     '''
-                    //sh '''ssh -t -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST "ssh -o StrictHostKeyChecking=no ec2-user@$ANSIBLE_HOST 'ansible-playbook -i /etc/ansible/stage_hosts /etc/ansible/deployment.yml'" '''
-                    //sh 'ssh -t -o StrictHostKeyChecking=no -J ec2-user@$BASTION_HOST ec2-user@$ANSIBLE_HOST "ansible-playbook -i /etc/ansible/stage_hosts /etc/ansible/deployment.yml"'
                 }
             }
         }
@@ -119,9 +107,8 @@ pipeline{
             steps {
                 sshagent(['ansible-key']) {
                     sh '''
-                      ssh -t -t -o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" ec2-user@$ANSIBLE_HOST "ansible-playbook -i /etc/ansible/prod_hosts /etc/ansible/deployment.yml"
+                      ssh -t -t -o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST" ec2-user@$ANSIBLE_HOST "ansible-playbook -i /etc/ansible/prod_hosts /etc/ansible/prod-playbook.yml"
                     '''
-                    //sh '''ssh -t -o StrictHostKeyChecking=no ec2-user@$BASTION_HOST "ssh -o StrictHostKeyChecking=no ec2-user@$ANSIBLE_HOST 'ansible-playbook -i /etc/ansible/prod_hosts /etc/ansible/deployment.yml'" '''
                 }
             }
         }
