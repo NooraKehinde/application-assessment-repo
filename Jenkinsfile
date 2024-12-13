@@ -68,7 +68,7 @@ pipeline {
                 sh "trivy image $NEXUS_REPO/myapp > trivyfs.txt"
             }
         }
-        stage('Delete image from jenkins server') {
+        stage('Delete image from Jenkins server') {
             steps {
                 sh 'docker rmi $NEXUS_REPO/myapp'
             }
@@ -82,7 +82,7 @@ pipeline {
                 }
             }
         }
-        stage('check stage website availability') {
+        stage('Check Stage Website Availability') {
             steps {
                  sh "sleep 90"
                  sh "curl -s -o /dev/null -w \"%{http_code}\" https://stage.noektech.com"
@@ -103,7 +103,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to prod') {
+        stage('Deploy to Prod') {
             steps {
                 sshagent(['ansible-key']) {
                     sh '''
@@ -112,7 +112,7 @@ pipeline {
                 }
             }
         }
-        stage('check prod website availability') {
+        stage('Check Prod Website Availability') {
             steps {
                  sh "sleep 90"
                  sh "curl -s -o /dev/null -w \"%{http_code}\" https://prod.noektech.com"
