@@ -85,9 +85,9 @@ pipeline {
         stage('Check Stage Website Availability') {
             steps {
                  sh "sleep 90"
-                 sh "curl -m 120 -s -o /dev/null -w \"%{http_code}\" https://stage.noektech.com"
+                 sh "curl -s -o /dev/null -w \"%{http_code}\" https://stage.noektech.com"
                 script {
-                    def response = sh(script: "curl -m 120 -s -o /dev/null -w \"%{http_code}\" https://stage.noektech.com", returnStdout: true).trim()
+                    def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" https://stage.noektech.com", returnStdout: true).trim()
                     if (response == "200") {
                         slackSend(color: 'good', message: "The stage petclinic java application is up and running with HTTP status code ${response}.", tokenCredentialId: 'slack')
                     } else {
